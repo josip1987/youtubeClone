@@ -68,6 +68,92 @@ function search() {
 	);
 };
 
+// next page
+function nextPage() {
+	// get the attributes
+	var token = $('#next-button').data('token');
+	var q = $('#next-button').data('query');
+
+	// clear results
+	$('#results').html('');
+	$('#buttons').html('');
+
+	// get form input
+	var q = $('#query').val();
+
+	// request
+	$.get(
+		"https://www.googleapis.com/youtube/v3/search", {
+			part: 'snippet, id',
+			q: q,
+			pageToken: token,
+			type: 'video',
+			key: 'AIzaSyBiUCXGO1gc6vPl_luHhPIr0WSLKbb2JA8' },
+			function(data) {
+				var nextPageToken = data.nextPageToken;
+				var prevPageToken = data.prevPageToken;
+
+				console.log(data);
+
+				$.each(data.items, function(i, item) {
+					// build the output
+					var output = getOutput(item);
+
+					// display results
+					$('#results').append(output);
+				});
+
+				var buttons = getButtons(prevPageToken, nextPageToken);
+
+				// display buttons
+				$('#buttons').append(buttons);
+			}
+	);
+};
+
+// prev page
+function prevPage() {
+	// get the attributes
+	var token = $('#prev-button').data('token');
+	var q = $('#prev-button').data('query');
+
+	// clear results
+	$('#results').html('');
+	$('#buttons').html('');
+
+	// get form input
+	var q = $('#query').val();
+
+	// request
+	$.get(
+		"https://www.googleapis.com/youtube/v3/search", {
+			part: 'snippet, id',
+			q: q,
+			pageToken: token,
+			type: 'video',
+			key: 'AIzaSyBiUCXGO1gc6vPl_luHhPIr0WSLKbb2JA8' },
+			function(data) {
+				var nextPageToken = data.nextPageToken;
+				var prevPageToken = data.prevPageToken;
+
+				console.log(data);
+
+				$.each(data.items, function(i, item) {
+					// build the output
+					var output = getOutput(item);
+
+					// display results
+					$('#results').append(output);
+				});
+
+				var buttons = getButtons(prevPageToken, nextPageToken);
+
+				// display buttons
+				$('#buttons').append(buttons);
+			}
+	);
+};
+
 // build output
 function getOutput(item) {
 	var videoId = item.id.videoId;
@@ -83,7 +169,7 @@ function getOutput(item) {
 		'<img src="'+thumb+'">' + 
 		'</div>' + 
 		'<div class="list-right">' + 
-		'<h3>'+title+'</h3>' + 
+		'<h3><a class="fancybox fancybox.iframe" href="https://www.youtube.com/embed/'+videoId+'">'+title+'</a></h3>' + 
 		'<small>By <span class="cTitle">'+channelTitle+'</span> on '+videoDate+'</small>' + 
 		'<p>'+description+'</p>' + 
 		'</div>' + 
