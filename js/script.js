@@ -30,7 +30,44 @@ $(function(){
 	});
 });
 
+// search
+function search() {
+	// clear results
+	$('#results').html('');
+	$('#buttons').html('');
 
+	// get form input
+	var q = $('#query').val();
+
+	// request
+	$.get(
+		"https://www.googleapis.com/youtube/v3/search", {
+			part: 'snippet, id',
+			q: q,
+			type: 'video',
+			key: 'AIzaSyBiUCXGO1gc6vPl_luHhPIr0WSLKbb2JA8' },
+			function(data) {
+				var nextPageToken = data.nextPageToken;
+				var prevPageToken = data.prevPageToken;
+
+				console.log(data);
+
+				$.each(data.items, function(i, item) {
+					// build the output
+					var output = getOutput(item);
+
+					// display results
+					$('#results').append(output);
+				});
+			}
+	);
+};
+
+
+// prevent submission
+$('#search-form').submit(function(e) {
+	e.preventDefault();
+});
 
 
 
